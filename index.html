@@ -3,94 +3,1258 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Drop Downs</title>
-  <link rel="stylesheet" href="./index.css">
+  <title>Product Manager</title>
+  <style>
+    /* CSS Reset & Variables */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light Theme */
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent: #3b82f6;
+      --accent-light: #dbeafe;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    /* Dark Theme */
+    body.dark {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent: #60a5fa;
+      --accent-light: #1e3a8a;
+      --border: #475569;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Base Styles */
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      transition: var(--transition);
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .app-container {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      background: var(--accent);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    /* Main Content */
+    main {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .filter-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* Search & Controls */
+    .search-container {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    #searchBar {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    #searchBar:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      padding: 0;
+    }
+
+    /* Filter Tags */
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-tag {
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 0.375rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-tag:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Products Grid */
+    .products-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .products-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .products-count {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    #container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .product-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .product-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .product-category {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Floating Action Button */
+    .floating-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      z-index: 10;
+      transition: var(--transition);
+    }
+
+    .floating-btn:hover {
+      transform: scale(1.1);
+      background: #2563eb;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 1rem;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      background: var(--bg-tertiary);
+      border-radius: 20px;
+      padding: 0.25rem;
+      display: flex;
+      width: 64px;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .theme-btn.active {
+      background: var(--bg-secondary);
+      box-shadow: var(--shadow);
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>🌿 Product Manager</h1>
-    <button id="toggleDark">🌙</button>
-  </header>
-
-  <main>
-    <section>
-      <button id="defilter" class="sort danger">Clear Filters</button>
-      <input type="text" id="searchBar" placeholder="🔍 search">
-      <h3>Categories :</h3>
-      <div id="categories">
-        <button id="addcat" class="sort success">➕</button>
-        <button id="fashion" class="sort">Fashion</button>
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">📦</div>
+        <span>Product Manager</span>
       </div>
-    </section>
-
-    <section>
-      <h3>Media :</h3>
-      <div id="formats">
-        <button id="addformat" class="sort success">➕</button>
-        <button id="video" class="sort">Video</button>
+      <div class="theme-toggle">
+        <button class="theme-btn active" id="lightToggle">☀️</button>
+        <button class="theme-btn" id="darkToggle">🌙</button>
       </div>
-    </section>
+    </header>
 
-    <section>
-      <h2>Products</h2>
-      <div id="container"></div>
-    </section>
-  </main>
+    <main>
+      <aside class="sidebar">
+        <section class="filter-section">
+          <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchBar" placeholder="Search products...">
+          </div>
+          
+          <div class="controls">
+            <button class="btn btn-primary" id="add">
+              <span>+</span>
+              <span>Add Product</span>
+            </button>
+            <button class="btn btn-danger" id="defilter">Clear Filters</button>
+          </div>
 
-  <button id="add" class="floating">➕</button>
+          <h3 class="section-title">Categories</h3>
+          <div class="filter-tags" id="categories">
+            <button class="btn btn-sm btn-success" id="addcat">+ Add</button>
+            <!-- Categories will be populated here -->
+          </div>
 
-  <!-- Product Form -->
-  <form id="form" class="modal">
-    <button id="closeBtn" class="close">❌</button>
-    <h2>Add Product</h2>
-    <label>
-      <span>Name: </span>
-      <input type="text" id="name" placeholder="Product name">
-    </label>
-    <label>
-      <select id="price">
-        <option value="GHC" selected>Ghc</option>
-        <option value="USD">Usd</option>
-      </select>
-      <input type="number" id="amount" placeholder="Amount">
-    </label>
-    <label>
-      <select id="category">
-        <option value="default">--Select Category--</option>
-        <option value="new">New Category</option>
-        <option value="fashion">Fashion</option>
-      </select>
-      <select id="media">
-        <option value="default">--Media--</option>
-        <option value="new">New Media</option>
-        <option value="video">Video</option>
-      </select>
-    </label>
-    <button type="submit" id="send" class="primary">Send</button>
-  </form>
+          <h3 class="section-title mt-2">Media Types</h3>
+          <div class="filter-tags" id="formats">
+            <button class="btn btn-sm btn-success" id="addformat">+ Add</button>
+            <!-- Media types will be populated here -->
+          </div>
+        </section>
+      </aside>
 
-  <!-- Category Form -->
-  <form id="C-add" class="modal data">
-    <button id="C-closeBtn" class="close">❌</button>
-    <h2>Add Category</h2>
-    <label>
-      <span>Category Name: </span>
-      <input type="text" placeholder="Enter Name" id="cName">
-    </label>
-    <button id="Csend" class="primary">Add</button>
-  </form>
+      <section class="products-section">
+        <div class="products-header">
+          <h2 class="products-title">Products</h2>
+          <span class="products-count" id="productCount">0 products</span>
+        </div>
+        
+        <div id="container">
+          <!-- Products will be populated here -->
+          <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>No products yet</h3>
+            <p class="mt-2">Add your first product to get started</p>
+            <button class="btn btn-primary mt-2" id="addFirstProduct">Add Product</button>
+          </div>
+        </div>
+      </section>
+    </main>
 
-  <!-- Media Form -->
-  <form id="m-add" class="modal data">
-    <button id="M-closeBtn" class="close">❌</button>
-    <h2>Add Media</h2>
-    <label>
-      <span>Media Name: </span>
-      <input type="text" placeholder="Enter Name" id="mName">
-    </label>
-    <button id="msend" class="primary">Add</button>
-  </form>
+    <button class="floating-btn" id="floatingAdd">+</button>
 
-  <script src="./index.js"></script>
+    <!-- Product Form Modal -->
+    <div class="modal-overlay" id="productModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Product</h3>
+          <button class="modal-close" id="closeBtn">×</button>
+        </div>
+        <form id="form">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="name">Product Name</label>
+              <input type="text" id="name" class="form-input" placeholder="Enter product name">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Price</label>
+              <div class="form-row">
+                <select id="price" class="form-select">
+                  <option value="GHC" selected>GHC</option>
+                  <option value="USD">USD</option>
+                </select>
+                <input type="number" id="amount" class="form-input" placeholder="Amount">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Category & Media</label>
+              <div class="form-row">
+                <select id="category" class="form-select">
+                  <option value="default">Select Category</option>
+                  <option value="new">New Category</option>
+                  <!-- Categories will be populated here -->
+                </select>
+                <select id="media" class="form-select">
+                  <option value="default">Select Media</option>
+                  <option value="new">New Media</option>
+                  <!-- Media types will be populated here -->
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="send">Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category Form Modal -->
+    <div class="modal-overlay" id="categoryModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Category</h3>
+          <button class="modal-close" id="C-closeBtn">×</button>
+        </div>
+        <form id="C-add">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="cName">Category Name</label>
+              <input type="text" id="cName" class="form-input" placeholder="Enter category name">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="C-cancelBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="Csend">Add Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Media Form Modal -->
+    <div class="modal-overlay" id="mediaModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Media Type</h3>
+          <button class="modal-close" id="M-closeBtn">×</button>
+        </div>
+        <form id="m-add">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="mName">Media Name</label>
+              <input type="text" id="mName" class="form-input" placeholder="Enter media type name">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="M-cancelBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="msend">Add Media</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const closeButton = document.getElementById('closeBtn')
+    const C_closeButton = document.getElementById('C-closeBtn')
+    const M_closeButton = document.getElementById('M-closeBtn')
+    const defilter = document.getElementById('defilter')
+    const addButton = document.getElementById('add')
+    const addFirstProductBtn = document.getElementById('addFirstProduct')
+    const floatingAddBtn = document.getElementById('floatingAdd')
+    const addFormat = document.getElementById('addformat')
+    const addCat = document.getElementById('addcat')
+    const form = document.getElementById('form')
+    const mAdd = document.getElementById('m-add')
+    const cAdd = document.getElementById('C-add')
+    const submit = document.getElementById('send')
+    const Csubmit = document.getElementById('Csend')
+    const msubmit = document.getElementById('msend')
+    const cancelBtn = document.getElementById('cancelBtn')
+    const C_cancelBtn = document.getElementById('C-cancelBtn')
+    const M_cancelBtn = document.getElementById('M-cancelBtn')
+    
+    // Modals
+    const productModal = document.getElementById('productModal')
+    const categoryModal = document.getElementById('categoryModal')
+    const mediaModal = document.getElementById('mediaModal')
+    
+    // Form inputs
+    const mediaForm = document.getElementById('media')
+    const category = document.getElementById('category') 
+    const pricing = document.getElementById('price') 
+    const amount = document.getElementById('amount') 
+    const Productname = document.getElementById('name') 
+    const mName = document.getElementById('mName') 
+    const cName = document.getElementById('cName') 
+    const searchBar = document.getElementById('searchBar') 
+
+    // Display elements
+    const showCat = document.getElementById('categories')
+    const showFormat = document.getElementById('formats')
+    const container = document.getElementById('container')
+    const productCount = document.getElementById('productCount')
+    
+    // Data model
+    const MODEL = {
+      categories: [],
+      media: [],
+      products: []
+    }
+    
+    const productModel = {
+      prodName: '',
+      prodPrice: '',
+      prodCurrency: '',
+      prodCat: '',
+      prodFormat: ''
+    }
+
+    // Theme toggle functionality
+    const lightToggle = document.getElementById('lightToggle')
+    const darkToggle = document.getElementById('darkToggle')
+    
+    lightToggle.addEventListener('click', () => {
+      document.body.classList.remove('dark')
+      lightToggle.classList.add('active')
+      darkToggle.classList.remove('active')
+    })
+    
+    darkToggle.addEventListener('click', () => {
+      document.body.classList.add('dark')
+      darkToggle.classList.add('active')
+      lightToggle.classList.remove('active')
+    })
+
+    // Event Listeners
+    searchBar.addEventListener('input', (e) => {
+      e.preventDefault()
+      
+      if (sessionStorage.getItem('filter')) {
+        const filter = JSON.parse(sessionStorage.getItem('filter'))
+        filter.z = searchBar.value
+        sessionStorage.setItem('filter', JSON.stringify(filter))
+        if (searchBar.value == '') { 
+          location.reload()
+          return 
+        } 
+        showProduct(filter)
+      } else {
+        const filter = {
+          x: '',
+          y: '',
+          z: searchBar.value,
+          timeStamp: Date.now()
+        }
+        sessionStorage.setItem('filter', JSON.stringify(filter))
+        if (searchBar.value == '') {
+          location.reload()
+          return 
+        } 
+        showProduct(filter)
+      }
+    })
+
+    addCat.addEventListener('click', (e) => {
+      e.preventDefault()
+      categoryModal.style.display = 'flex'
+    })
+
+    addFormat.addEventListener('click', (e) => {
+      e.preventDefault()
+      mediaModal.style.display = 'flex'
+    })
+
+    defilter.addEventListener('click', (e) => {
+      e.preventDefault()
+      sessionStorage.removeItem('filter')
+      container.innerHTML = ""
+      location.reload()
+    })
+
+    // Open product modal from various buttons
+    const openProductModal = (e) => {
+      e.preventDefault()
+      productModal.style.display = 'flex'
+      
+      const userTyping = {
+        Productname: Productname.value,
+        pricing: pricing.value,
+        amount: amount.value,
+        category: category.value,
+        mediaForm: mediaForm.value
+      }
+      
+      if (!userTyping.Productname || !userTyping.pricing || !userTyping.amount || !userTyping.category || !userTyping.mediaForm) {
+        const data = JSON.parse(sessionStorage.getItem('active'))
+        if (data) {
+          Productname.value = data.Productname
+          pricing.value = data.pricing
+          amount.value = data.amount
+          category.value = data.category
+          mediaForm.value = data.mediaForm
+        }
+      }
+    }
+
+    addButton.addEventListener('click', openProductModal)
+    addFirstProductBtn.addEventListener('click', openProductModal)
+    floatingAddBtn.addEventListener('click', openProductModal)
+
+    // Close modals
+    const closeModal = (modal) => {
+      modal.style.display = 'none'
+    }
+
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(productModal)
+    })
+
+    C_closeButton.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(categoryModal)
+    })
+
+    M_closeButton.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(mediaModal)
+    })
+
+    cancelBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(productModal)
+    })
+
+    C_cancelBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(categoryModal)
+    })
+
+    M_cancelBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      closeModal(mediaModal)
+    })
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === productModal) closeModal(productModal)
+      if (e.target === categoryModal) closeModal(categoryModal)
+      if (e.target === mediaModal) closeModal(mediaModal)
+    })
+
+    submit.addEventListener('click', (e) => {
+      e.preventDefault()
+      DataAdd()
+    })
+
+    Csubmit.addEventListener('click', (e) => {
+      e.preventDefault()
+      CAdding()
+    })
+
+    msubmit.addEventListener('click', (e) => {
+      e.preventDefault()
+      Madding()
+    })
+
+    // Filter by category or media
+    const setupFilterButtons = () => {
+      // Category filter buttons
+      document.querySelectorAll('#categories button:not(#addcat)').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          if (sessionStorage.getItem('filter')) {
+            const filter = JSON.parse(sessionStorage.getItem('filter'))
+            filter.x = button.id
+            sessionStorage.setItem('filter', JSON.stringify(filter))
+            showProduct(filter)
+          } else {
+            const filter = {
+              x: button.id,
+              y: '',
+              z: '',
+              timeStamp: Date.now()
+            }
+            sessionStorage.setItem('filter', JSON.stringify(filter))
+            showProduct(filter)
+          }
+        })
+      })
+
+      // Media filter buttons
+      document.querySelectorAll('#formats button:not(#addformat)').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          if (sessionStorage.getItem('filter')) {
+            const filter = JSON.parse(sessionStorage.getItem('filter'))
+            filter.y = button.id
+            sessionStorage.setItem('filter', JSON.stringify(filter))
+            showProduct(filter)
+          } else {
+            const filter = {
+              x: '',
+              y: button.id,
+              z: '',
+              timeStamp: Date.now()
+            }
+            sessionStorage.setItem('filter', JSON.stringify(filter))
+            showProduct(filter)
+          }
+        })
+      })
+    }
+
+    // Data management functions (same as original)
+    function DataAdd() {
+      const userTyping = {
+        Productname: Productname.value,
+        pricing: pricing.value,
+        amount: amount.value,
+        category: category.value,
+        mediaForm: mediaForm.value
+      }
+      
+      if (!userTyping.Productname || !userTyping.pricing || !userTyping.amount || !userTyping.category || !userTyping.mediaForm) {
+        return alert('Please fill in all fields')
+      }
+      
+      sessionStorage.setItem('active', JSON.stringify(userTyping))
+      
+      if (userTyping.category == "new") {
+        closeModal(productModal)
+        categoryModal.style.display = 'flex'
+        return 
+      }
+      
+      if (userTyping.category == "default") {
+        return alert("Please select a category")
+      }
+      
+      if (userTyping.mediaForm == "new") {
+        closeModal(productModal)
+        mediaModal.style.display = 'flex'
+        return 
+      }
+      
+      if (userTyping.mediaForm == "default") {
+        return alert("Please select a media type")
+      }
+
+      const data = JSON.parse(sessionStorage.getItem('appData'))
+      if (data) {
+        const product = {
+          prodName: userTyping.Productname,
+          prodPrice: userTyping.amount,
+          prodCurrency: userTyping.pricing,
+          prodCat: userTyping.category,
+          prodFormat: userTyping.mediaForm
+        } 
+        data.products.push(JSON.stringify(product))
+        sessionStorage.setItem('appData', JSON.stringify(data))
+        
+        // Update UI
+        if (document.querySelector('.empty-state')) {
+          document.querySelector('.empty-state').remove()
+        }
+        
+        const make = document.createElement('div')
+        make.className = "product-card"
+        make.innerHTML = `
+          <div>
+            <h3 class="product-name">${userTyping.Productname}</h3>
+            <div class="product-price">${userTyping.pricing} ${userTyping.amount}</div>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">${userTyping.category}</span>
+            <span class="product-media">${userTyping.mediaForm}</span>
+          </div>
+        `
+        container.appendChild(make)
+        
+        // Update product count
+        updateProductCount()
+        
+      } else {
+        const product = {
+          prodName: userTyping.Productname,
+          prodPrice: userTyping.amount,
+          prodCurrency: userTyping.pricing,
+          prodCat: userTyping.category,
+          prodFormat: userTyping.mediaForm
+        } 
+        MODEL.products.push(JSON.stringify(product))
+        sessionStorage.setItem('appData', JSON.stringify(MODEL))
+        
+        // Update UI
+        if (document.querySelector('.empty-state')) {
+          document.querySelector('.empty-state').remove()
+        }
+        
+        const make = document.createElement('div')
+        make.className = "product-card"
+        make.innerHTML = `
+          <div>
+            <h3 class="product-name">${userTyping.Productname}</h3>
+            <div class="product-price">${userTyping.pricing} ${userTyping.amount}</div>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">${userTyping.category}</span>
+            <span class="product-media">${userTyping.mediaForm}</span>
+          </div>
+        `
+        container.appendChild(make)
+        
+        // Update product count
+        updateProductCount()
+      }
+      
+      // Reset form and close modal
+      form.reset()
+      closeModal(productModal)
+    }
+
+    function CAdding() {
+      if (!cName.value) return alert('Please enter a category name')
+      
+      if (!sessionStorage.getItem('appData')) {
+        MODEL.categories.push(cName.value)
+        sessionStorage.setItem('appData', JSON.stringify(MODEL))
+      } else {
+        const data = JSON.parse(sessionStorage.getItem('appData'))
+        data.categories.push(cName.value)
+        const saveas = {
+          categories: data.categories,
+          media: data.media,
+          products: data.products
+        }
+        sessionStorage.setItem('appData', JSON.stringify(saveas))
+      }
+      
+      // Update UI
+      const newCategoryBtn = document.createElement('button')
+      newCategoryBtn.className = "filter-tag"
+      newCategoryBtn.id = cName.value
+      newCategoryBtn.textContent = cName.value
+      showCat.appendChild(newCategoryBtn)
+      
+      // Add to category dropdown
+      const newCategoryOption = document.createElement('option')
+      newCategoryOption.value = cName.value
+      newCategoryOption.textContent = cName.value
+      category.appendChild(newCategoryOption)
+      
+      // Reset form and close modal
+      cName.value = ''
+      closeModal(categoryModal)
+      
+      // Re-setup event listeners for new buttons
+      setupFilterButtons()
+    }
+
+    function Madding() {
+      if (!mName.value) return alert('Please enter a media type name')
+      
+      if (!sessionStorage.getItem('appData')) {
+        MODEL.media.push(mName.value)
+        sessionStorage.setItem('appData', JSON.stringify(MODEL))
+      } else {
+        const data = JSON.parse(sessionStorage.getItem('appData'))
+        data.media.push(mName.value)
+        const saveas = {
+          categories: data.categories,
+          media: data.media,
+          products: data.products
+        }
+        sessionStorage.setItem('appData', JSON.stringify(saveas))
+      }
+      
+      // Update UI
+      const newMediaBtn = document.createElement('button')
+      newMediaBtn.className = "filter-tag"
+      newMediaBtn.id = mName.value
+      newMediaBtn.textContent = mName.value
+      showFormat.appendChild(newMediaBtn)
+      
+      // Add to media dropdown
+      const newMediaOption = document.createElement('option')
+      newMediaOption.value = mName.value
+      newMediaOption.textContent = mName.value
+      mediaForm.appendChild(newMediaOption)
+      
+      // Reset form and close modal
+      mName.value = ''
+      closeModal(mediaModal)
+      
+      // Re-setup event listeners for new buttons
+      setupFilterButtons()
+    }
+
+    function population() {
+      if (!sessionStorage.getItem('appData')) {
+        return
+      }
+      
+      const data = JSON.parse(sessionStorage.getItem('appData'))
+      
+      // Populate categories
+      data.categories.forEach(element => {
+        const option = document.createElement('option')
+        option.value = element
+        option.textContent = element
+        category.appendChild(option)
+        
+        const button = document.createElement('button')
+        button.className = "filter-tag"
+        button.id = element
+        button.textContent = element
+        showCat.appendChild(button)
+      })
+      
+      // Populate media types
+      data.media.forEach(element => {
+        const option = document.createElement('option')
+        option.value = element
+        option.textContent = element
+        mediaForm.appendChild(option)
+        
+        const button = document.createElement('button')
+        button.className = "filter-tag"
+        button.id = element
+        button.textContent = element
+        showFormat.appendChild(button)
+      })
+      
+      // Populate products
+      if (!data.products || data.products.length === 0) {
+        return
+      }
+      
+      // Remove empty state if products exist
+      if (document.querySelector('.empty-state')) {
+        document.querySelector('.empty-state').remove()
+      }
+      
+      data.products.forEach(element => {
+        const product = JSON.parse(element)
+        const card = document.createElement('div')
+        card.className = "product-card"
+        card.innerHTML = `
+          <div>
+            <h3 class="product-name">${product.prodName}</h3>
+            <div class="product-price">${product.prodCurrency} ${product.prodPrice}</div>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">${product.prodCat}</span>
+            <span class="product-media">${product.prodFormat}</span>
+          </div>
+        `
+        container.appendChild(card)
+      })
+      
+      // Update product count
+      updateProductCount()
+      
+      // Setup filter buttons
+      setupFilterButtons()
+    }
+
+    function updateProductCount() {
+      const data = JSON.parse(sessionStorage.getItem('appData'))
+      if (data && data.products) {
+        productCount.textContent = `${data.products.length} product${data.products.length !== 1 ? 's' : ''}`
+      } else {
+        productCount.textContent = "0 products"
+      }
+    }
+
+    function showProduct(item = {x: '', y: '', z: ''}) {
+      const referenceData = JSON.parse(sessionStorage.getItem('appData'))
+      if (!referenceData) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No data found</h3></div>'
+        return
+      }
+      
+      if (!referenceData.products) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No products found</h3></div>'
+        return
+      }
+      
+      let filteredProducts = referenceData.products.map(p => JSON.parse(p))
+      
+      // Apply search filter
+      if (item.z) {
+        filteredProducts = filteredProducts.filter(p => 
+          p.prodName.toLowerCase().includes(item.z.toLowerCase())
+        )
+      }
+      
+      // Apply category filter
+      if (item.x) {
+        filteredProducts = filteredProducts.filter(p => p.prodCat === item.x)
+      }
+      
+      // Apply media filter
+      if (item.y) {
+        filteredProducts = filteredProducts.filter(p => p.prodFormat === item.y)
+      }
+      
+      // Update UI
+      container.innerHTML = ''
+      
+      if (filteredProducts.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No products match your filters</h3><p class="mt-2">Try adjusting your search or filters</p></div>'
+        return
+      }
+      
+      filteredProducts.forEach(product => {
+        const card = document.createElement('div')
+        card.className = "product-card"
+        card.innerHTML = `
+          <div>
+            <h3 class="product-name">${product.prodName}</h3>
+            <div class="product-price">${product.prodCurrency} ${product.prodPrice}</div>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">${product.prodCat}</span>
+            <span class="product-media">${product.prodFormat}</span>
+          </div>
+        `
+        container.appendChild(card)
+      })
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', () => {
+      population()
+    })
+  </script>
 </body>
 </html>
