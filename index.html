@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Drop Downs</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <header>
+    <h1>🌿 Product Manager</h1>
+    <button id="toggleDark">🌙</button>
+  </header>
+
+  <main>
+    <section>
+      <button id="defilter" class="sort danger">Clear Filters</button>
+      <input type="text" id="searchBar" placeholder="🔍 search">
+      <h3>Categories :</h3>
+      <div id="categories">
+        <button id="addcat" class="sort success">➕</button>
+        <button id="fashion" class="sort">Fashion</button>
+      </div>
+    </section>
+
+    <section>
+      <h3>Media :</h3>
+      <div id="formats">
+        <button id="addformat" class="sort success">➕</button>
+        <button id="video" class="sort">Video</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Products</h2>
+      <div id="container"></div>
+    </section>
+  </main>
+
+  <button id="add" class="floating">➕</button>
+
+  <!-- Product Form -->
+  <form id="form" class="modal">
+    <button id="closeBtn" class="close">❌</button>
+    <h2>Add Product</h2>
+    <label>
+      <span>Name: </span>
+      <input type="text" id="name" placeholder="Product name">
+    </label>
+    <label>
+      <select id="price">
+        <option value="GHC" selected>Ghc</option>
+        <option value="USD">Usd</option>
+      </select>
+      <input type="number" id="amount" placeholder="Amount">
+    </label>
+    <label>
+      <select id="category">
+        <option value="default">--Select Category--</option>
+        <option value="new">New Category</option>
+        <option value="fashion">Fashion</option>
+      </select>
+      <select id="media">
+        <option value="default">--Media--</option>
+        <option value="new">New Media</option>
+        <option value="video">Video</option>
+      </select>
+    </label>
+    <button type="submit" id="send" class="primary">Send</button>
+  </form>
+
+  <!-- Category Form -->
+  <form id="C-add" class="modal data">
+    <button id="C-closeBtn" class="close">❌</button>
+    <h2>Add Category</h2>
+    <label>
+      <span>Category Name: </span>
+      <input type="text" placeholder="Enter Name" id="cName">
+    </label>
+    <button id="Csend" class="primary">Add</button>
+  </form>
+
+  <!-- Media Form -->
+  <form id="m-add" class="modal data">
+    <button id="M-closeBtn" class="close">❌</button>
+    <h2>Add Media</h2>
+    <label>
+      <span>Media Name: </span>
+      <input type="text" placeholder="Enter Name" id="mName">
+    </label>
+    <button id="msend" class="primary">Add</button>
+  </form>
+
+  <script src="./index.js"></script>
+</body>
+</html>

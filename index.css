@@ -1,0 +1,161 @@
+/* Reset */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f4f9f4;
+  --text: #2f3e46;
+  --accent: #52796f;
+  --primary: #84a98c;
+  --danger: #d9534f;
+  --card-bg: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+body.dark {
+  --bg: #1c1c1c;
+  --text: #e0e0e0;
+  --accent: #88d498;
+  --primary: #4caf50;
+  --danger: #ff6b6b;
+  --card-bg: #2a2a2a;
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  padding: 1em;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  border: none;
+  transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.sort {
+  background: var(--accent);
+  color: white;
+  margin: 0.3em;
+}
+
+.success {
+  background: var(--primary);
+  color: white;
+}
+
+.danger {
+  background: var(--danger);
+  color: white;
+}
+
+.primary {
+  background: var(--primary);
+  color: white;
+}
+
+.close {
+  background: transparent;
+  font-size: 1.2em;
+  color: var(--danger);
+}
+
+.floating {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+  font-size: 1.4rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* Product Cards */
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 1em;
+  justify-content: center;
+}
+
+.allProducts {
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px var(--shadow);
+  border-radius: 12px;
+  padding: 1em;
+  width: 220px;
+  transition: transform 0.2s ease-in-out;
+  gap: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.allProducts:hover {
+  transform: translateY(-5px);
+}
+
+.allProducts label {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.allProducts span {
+  background: var(--accent);
+  color: white;
+  padding: 0.2em 0.6em;
+  border-radius: 5px;
+}
+
+/* Forms (Modal Style) */
+.modal {
+  display: none;
+  flex-direction: column;
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 2em;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px var(--shadow);
+  width: 350px;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  gap: 1em;
+}
+
+.modal input,
+.modal select {
+  width: 100%;
+  padding: 0.8em;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+}
